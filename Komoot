@@ -1,0 +1,51 @@
+import io.appium.java_client.MobileElement;
+import io.appium.java_client.android.AndroidDriver;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+public class MyKomootTest {
+
+    private AndroidDriver driver;
+
+    @Before
+    public void setup () throws MalformedURLException {
+        //Capabilities
+        DesiredCapabilities caps = new DesiredCapabilities();
+
+        caps.setCapability("deviceName","Pixel_2_API_27");
+        caps.setCapability("platformName","Android");
+        caps.setCapability("platformVersion","8.1");
+        caps.setCapability("app","C:\\Users\\Mert\\Desktop\\Komoot.apk");
+        caps.setCapability("appWaitActivity","de.komoot.android.app.JoinKomootActivityV2");
+
+        driver = new AndroidDriver(new URL("http://localhost:4723/wd/hub"),caps);
+    }
+
+    @Test
+    public void KomootTest() throws InterruptedException {
+        //Click Log IN button
+        MobileElement Login_but =(MobileElement)driver.findElement(By.id("de.komoot.android:id/textview_mail_register_txt"));
+        Login_but.click();
+        // Fill the email box
+        MobileElement email_box = (MobileElement) driver.findElement(By.id("de.komoot.android:id/lsea_input_field_tet"));
+        email_box.sendKeys("mert@");
+        // Tap to log in
+        driver.findElement(By.id("de.komoot.android:id/lsea_next_button_tb")).click();
+        // Checked the error if it is correct
+        MobileElement error_mes = (MobileElement) driver.findElement(By.id("de.komoot.android:id/lsea_feedback_message_ttv"));
+        Assert.assertEquals("Invalid email address" , error_mes.getText());
+    }
+
+    @After
+    public void tearDown() {
+        driver.quit();
+    }
+
+}
