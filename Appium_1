@@ -1,0 +1,47 @@
+import java.net.MalformedURLException;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.WebElement;
+
+import io.appium.java_client.TouchAction;
+import static io.appium.java_client.touch.TapOptions.tapOptions; // added to use tapOptions() Line 22
+import static io.appium.java_client.touch.LongPressOptions.longPressOptions; // added to use longPressOption() Line 31
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+import static io.appium.java_client.touch.offset.ElementOption.element; // added to use element() Line 22
+import static java.time.Duration.ofSeconds; // added to use ofSeconds() Line 33 
+
+public class Automation_2 extends base {
+
+	public static void main(String[] args) throws MalformedURLException {
+		//From base class
+		AndroidDriver<AndroidElement> driver = DriverConn();
+		
+		driver.findElementByAndroidUIAutomator("text(\"Views\")").click();
+		
+		//Wait Code
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+		//TouchActions - Tap 
+		TouchAction Tact = new TouchAction(driver);
+		WebElement expanBut = driver.findElementByAndroidUIAutomator("text(\"Expandable Lists\")"); //Expandable Lists
+		Tact.tap(tapOptions().withElement(element(expanBut))).perform();
+		
+		driver.findElementByAndroidUIAutomator("text(\"1. Custom Adapter\")").click();
+		
+		//Long Press
+		WebElement longpress = driver.findElementByAndroidUIAutomator("text(\"People Names\")");
+		Tact.longPress(longPressOptions().withElement(element(longpress)).withDuration(ofSeconds(2))).release().perform();
+		
+		// Output
+		System.out.print(driver.findElementById("android:id/title").isDisplayed());
+		
+		
+		
+		
+		
+		
+		
+		
+	}
+
+}
