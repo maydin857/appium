@@ -35,13 +35,6 @@ public class Automation_2 extends base {
 		// Output
 		System.out.print(driver.findElementById("android:id/title").isDisplayed());
 		
-		
-		
-		
-		
-		
-		
-		
 	}
 
 }
