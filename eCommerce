@@ -1,0 +1,66 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.net.MalformedURLException;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+
+public class eCommerce extends base {
+	
+
+	public static void main(String[] args) throws MalformedURLException {
+		// TODO Auto-generated method stub
+		AndroidDriver<AndroidElement> driver = DriverConn();
+		
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //wait
+		
+		WebElement country = driver.findElementById("com.androidsample.generalstore:id/spinnerCountry");
+		country.click();
+		// Select a country
+		driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"Antarctica\"));");
+		driver.findElementByAndroidUIAutomator("text(\"Antarctica\")").click();
+		
+		//Put name
+		driver.findElement(By.id("com.androidsample.generalstore:id/nameField")).sendKeys("Mert");
+		
+		// Sex
+		driver.findElement(By.id("com.androidsample.generalstore:id/radioFemale")).click();
+		
+		// Log in
+		driver.findElement(By.id("com.androidsample.generalstore:id/btnLetsShop")).click();
+			
+		driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"Nike SFB Jungle\"));");
+		//Add to cart
+		int productQuantities = driver.findElements(By.id("com.androidsample.generalstore:id/productName")).size();
+		for(int i=0;i<productQuantities;i++)
+		{
+			String productText = driver.findElements(By.id("com.androidsample.generalstore:id/productName")).get(i).getText();
+			System.out.println(productText);
+			if(productText.equalsIgnoreCase("Nike SFB Jungle"))
+			{
+				driver.findElements(By.id("com.androidsample.generalstore:id/productAddCart")).get(i).click();
+				break;
+			}
+		}
+		
+		// Click on add items
+		driver.findElement(By.id("com.androidsample.generalstore:id/appbar_btn_cart")).click();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //wait
+		String addCartItems = driver.findElement(By.id("com.androidsample.generalstore:id/productName")).getText();
+		Assert.assertEquals("Nike SFB Jungle", addCartItems);
+		
+		// Scroll down harder way
+		/*
+		driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()"
+                + ".resourceId(\"com.androidsample.generalstore:id/rvProductList\")).scrollIntoView(" // parent
+                + "new UiSelector().text(\"Nike SFB Jungle\"));");  // child
+		*/
+		
+	}
+
+}
