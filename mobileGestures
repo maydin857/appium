@@ -1,0 +1,99 @@
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.net.MalformedURLException;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.touch.TouchActions;
+
+import io.appium.java_client.TouchAction;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
+
+import static io.appium.java_client.touch.TapOptions.tapOptions; // added to use tapOptions() Line 22
+import static io.appium.java_client.touch.LongPressOptions.longPressOptions; // added to use longPressOption() Line 31
+import static io.appium.java_client.touch.offset.ElementOption.element; // added to use element() Line 22
+import static java.time.Duration.ofSeconds; // added to use ofSeconds() Line 33 
+
+
+public class eCommerce extends base {
+	
+
+	@SuppressWarnings("deprecation")
+	public static void main(String[] args) throws MalformedURLException, InterruptedException {
+		// TODO Auto-generated method stub
+		AndroidDriver<AndroidElement> driver = DriverConn();
+		
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //wait
+		
+		WebElement country = driver.findElementById("com.androidsample.generalstore:id/spinnerCountry");
+		country.click();
+		// Select a country
+		driver.findElementByAndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\"Antarctica\"));");
+		driver.findElementByAndroidUIAutomator("text(\"Antarctica\")").click();
+		
+		//Put name
+		driver.findElement(By.id("com.androidsample.generalstore:id/nameField")).sendKeys("Mert");
+		
+		// Sex
+		driver.findElement(By.id("com.androidsample.generalstore:id/radioFemale")).click();
+		
+		// Log in
+		driver.findElement(By.id("com.androidsample.generalstore:id/btnLetsShop")).click();
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS); //wait
+		//Test
+		WebElement first_item_addCard = driver.findElementsById("com.androidsample.generalstore:id/productAddCart").get(0);
+		first_item_addCard.click();
+		String firstItemName = "Air Jordan 4 Retro";
+		
+		WebElement second_item_addCard = driver.findElementsById("com.androidsample.generalstore:id/productAddCart").get(1);
+		second_item_addCard.click();
+		String secondItemName = "Air Jordan 1 Mid SE";
+		
+		driver.findElement(By.id("com.androidsample.generalstore:id/appbar_btn_cart")).click();
+		Thread.sleep(4000);
+		
+		int sizeOfProducts = driver.findElements(By.id("com.androidsample.generalstore:id/productPrice")).size();
+		float sumAmounts = 0;
+		for(int i=0;i<sizeOfProducts;i++)
+		{
+			String f_itemName = driver.findElements(By.id("com.androidsample.generalstore:id/productPrice")).get(i).getText();
+			float amount = getAmount(f_itemName);
+			sumAmounts = sumAmounts + amount;			
+		}
+		System.out.println(sumAmounts);
+		
+		// Mobile Gestures
+		WebElement conditions = driver.findElement(By.className("android.widget.CheckBox"));
+		TouchAction touch = new TouchAction(driver);
+		touch.tap(tapOptions().withElement(element(conditions))).perform();
+		
+		//Long Press
+		WebElement tc = driver.findElement(By.xpath("//*[@text='Please read our terms of conditions']"));
+		touch.longPress(longPressOptions().withElement(element(tc)).withDuration(ofSeconds(2))).release().perform();
+		driver.findElement(By.id("android:id/button1")).click();
+		
+		// Go to web page
+		driver.findElement(By.id("com.androidsample.generalstore:id/btnProceed")).click();	
+
+		// Total Value
+		String totalValue = driver.findElement(By.id("com.androidsample.generalstore:id/totalAmountLbl")).getText();
+		totalValue = totalValue.substring(1);
+		float totalValue2 = Float.parseFloat(totalValue);
+		System.out.println(totalValue2);
+			
+		// Validation
+		
+		Assert.assertEquals(sumAmounts, totalValue2, 0);  
+	}
+	
+	public static float getAmount(String amount)
+	{
+		String totalValue = amount.substring(1);
+		float totalValue2 = Float.parseFloat(totalValue);
+		return totalValue2;
+	}
+
+}
